@@ -7,11 +7,11 @@
       </div>
       <div class="product-info">
         <a :href="link">
-          <h1>{{ product }}</h1>
+          <h1>{{ title }}</h1>
         </a>
-        <p v-if="inventory > 10">In Stock</p>
-        <p v-else-if="inventory <= 10 && inventory > 0">Selling fast!</p>
-        <p v-else>Out of Stock</p>
+        <p v-if="inStock > 10">In Stock</p>
+        <p v-else-if="inStock <= 10 && inStock > 0">Selling fast!</p>
+        <p v-else :class="{ lineThrough: true }">Out of Stock</p>
         <span v-show="onSale">On sale!</span>
         <p>Details:</p>
         <ul>
@@ -22,11 +22,16 @@
           <li v-for="(size, index) in sizes" :key="index">{{ size }}</li>
         </ul>
         <p>Colours:</p>
-        <ul v-for="variant in variants" :key="variant.variantId">
-          <li @mouseover="updateProduct(variant.variantImage)">{{ variant.variantColor }}</li>
-        </ul>
+        <div v-for="(variant, index) in variants" 
+          :key="variant.variantId"
+          class="color-box"
+          :style="{ backgroundColor: variant.variantColor }"
+          @mouseover="updateProduct(index)">
+        </div>
         <p>
-          <button v-on:click="addToCart">Add to cart</button>
+          <button v-on:click="addToCart" 
+            :disabled="!inStock"
+            :class="{ disabledButton: !inStock }">Add to cart</button>
         </p>
         <p>
           <button v-on:click="removeFromCart">Remove from cart</button>
@@ -45,37 +50,54 @@ export default {
   data: () => {
     return {
       product: "Socks",
-      image: require("./assets/blue.jpg"),
+      brand: "Unknown Branded",
+      selectedVariant: 0,
       link: "http://teeturtle.com",
-      inventory: 8,
-      onSale: true,
       details: ["Amazing happy octopus", "BPA free"],
       variants: [
         {
           variantId: 1234,
-          variantColor: "blue",
+          variantColor: "powderblue",
           variantImage: require("./assets/blue.jpg"),
+          variantQuantity: 0,
+          variantOnSale: true
         },
         {
           variantId: 1235,
-          variantColor: "also blue",
+          variantColor: "mediumturquoise",
           variantImage: require("./assets/bluer.jpg"),
+          variantQuantity: 10,
+          variantOnSale: false
         },
       ],
       sizes: ["8", "9", "10"],
       cart: 0,
-    };
+    }
   },
   methods: {
     addToCart() {
-      this.cart += 1;
+      this.cart += 1
     },
     removeFromCart() {
-      this.cart -= 1;
+      this.cart -= this.cart && 1 
     },
-    updateProduct(variantImage) {
-      this.image = variantImage;
+    updateProduct(index) {
+      this.selectedVariant = index
     },
   },
-};
+  computed: {
+    title() {
+      return `${this.brand} ${this.product}`
+    },
+    image() {
+      return this.variants[this.selectedVariant].variantImage
+    },
+    inStock() {
+      return this.variants[this.selectedVariant].variantQuantity
+    },
+    onSale() {
+      return this.variants[this.selectedVariant].variantOnSale
+    }
+  }
+}
 </script>
