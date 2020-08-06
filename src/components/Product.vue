@@ -36,9 +36,7 @@
       <p>
         <button v-on:click="removeFromCart">Remove from cart</button>
       </p>
-      <div class="cart">
-        <p>Cart ({{ cart }})</p>
-      </div>
+
     </div>
   </div>
 </template>
@@ -65,7 +63,7 @@ export default {
           variantId: 1234,
           variantColor: "powderblue",
           variantImage: require("../assets/blue.jpg"),
-          variantQuantity: 0,
+          variantQuantity: 100,
           variantOnSale: true,
         },
         {
@@ -77,15 +75,14 @@ export default {
         },
       ],
       sizes: ["8", "9", "10"],
-      cart: 0,
     }
   },
   methods: {
     addToCart() {
-      this.cart += 1
+      this.$emit('update-cart', true, this.variants[this.selectedVariant].variantId)
     },
     removeFromCart() {
-      this.cart -= this.cart && 1
+      this.$emit('update-cart', false, this.variants[this.selectedVariant].variantId)
     },
     updateProduct(index) {
       this.selectedVariant = index

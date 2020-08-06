@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="nav-bar"></div>
-    <Product :premium="premium" />
+    <div class="cart">
+      <p>Cart ({{ cart.length }})</p>
+    </div>
+    <Product :premium="premium" @update-cart="updateCart" />
   </div>
 </template>
 
@@ -12,11 +15,23 @@ export default {
   name: "App",
   data: () => {
     return {
-      premium: false
+      premium: false,
+      cart: [],
     }
   },
   components: {
     Product
+  },
+  methods: {
+    updateCart(add, id) {
+      if (add) {
+        this.cart.push(id)
+      } else {
+        const firstIndex = this.cart.findIndex(cartItem => cartItem === id)
+        console.log(firstIndex)
+        firstIndex != -1 && this.cart.splice(firstIndex, 1)
+      }
+    }
   }
 }
 </script>
