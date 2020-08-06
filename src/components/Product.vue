@@ -36,13 +36,25 @@
       <p>
         <button v-on:click="removeFromCart">Remove from cart</button>
       </p>
-
+      <div>
+        <h2>Reviews</h2>
+        <p v-show="!reviews.length">There are no reviews yet.</p>
+        <ul>
+          <li v-for="(review, index) in reviews" :key="index">
+            <p>{{ review.name }}</p>
+            <p>Rating: {{ review.rating }}</p>
+            <p>{{ review.review }}</p>
+          </li>
+        </ul>
+      </div>
+      <ProductReview @review-submitted="addReview" />
     </div>
   </div>
 </template>
 
 <script>
 import Details from './Details'
+import ProductReview from './ProductReview'
 
 export default {
   props: {
@@ -75,6 +87,7 @@ export default {
         },
       ],
       sizes: ["8", "9", "10"],
+      reviews: []
     }
   },
   methods: {
@@ -87,6 +100,9 @@ export default {
     updateProduct(index) {
       this.selectedVariant = index
     },
+    addReview(review) {
+      this.reviews.push(review)
+    }
   },
   computed: {
     title() {
@@ -106,7 +122,8 @@ export default {
     }
   },
   components: {
-    Details
+    Details,
+    ProductReview
   }
 }
 </script>

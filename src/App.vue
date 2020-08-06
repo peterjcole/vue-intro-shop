@@ -28,7 +28,6 @@ export default {
         this.cart.push(id)
       } else {
         const firstIndex = this.cart.findIndex(cartItem => cartItem === id)
-        console.log(firstIndex)
         firstIndex != -1 && this.cart.splice(firstIndex, 1)
       }
     }
